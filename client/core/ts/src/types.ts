@@ -1377,6 +1377,9 @@ export interface DeploymentConfig {
 	/**
 	 * The minimum age (in hours) an image must have before
 	 * `auto_update` will deploy it. `0` (default) disables the check.
+	 * 
+	 * Measured from the registry push time for Docker Hub images,
+	 * and from the image build time for every other registry.
 	 */
 	min_update_age_hours: number;
 	/** Whether to send ContainerStateChange alerts for this deployment. */
@@ -2555,6 +2558,9 @@ export interface StackConfig {
 	/**
 	 * The minimum age (in hours) an image must have before
 	 * `auto_update` will deploy it. `0` (default) disables the check.
+	 * 
+	 * Measured from the registry push time for Docker Hub images,
+	 * and from the image build time for every other registry.
 	 */
 	min_update_age_hours: number;
 	/** Whether to run `docker compose down` before `compose up`. */

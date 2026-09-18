@@ -26,7 +26,7 @@ export function MinUpdateAge({
       label="Minimum Update Age"
       description={
         description ??
-        "Require the image to be at least this old before Auto Update deploys it. 0 disables the check."
+        "Require the image to have been in the registry this long before Auto Update deploys it. 0 disables the check."
       }
     >
       <Group gap="xs">

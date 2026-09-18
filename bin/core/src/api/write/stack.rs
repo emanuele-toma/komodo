@@ -40,7 +40,7 @@ use crate::{
   api::execute::{self, ExecuteRequest, ExecutionResult},
   config::core_config,
   helpers::{
-    image_digest::image_meets_min_age,
+    image_age::image_meets_min_age,
     query::{get_all_tags, get_swarm_or_server},
     stack_git_token, swarm_or_server_request,
     update::{add_update, make_update, poll_update_until_complete},
@@ -965,17 +965,22 @@ pub async fn check_stack_for_update_inner(
   if stack.config.min_update_age_hours > 0 {
     let mut aged = Vec::with_capacity(services_with_update.len());
     for service in services_with_update {
-      let image = stack
-        .info
-        .deployed_services
-        .as_ref()
-        .and_then(|services| {
-          services.iter().find_map(|deployed| {
-            (deployed.service_name == service.service)
-              .then_some(&deployed.image)
+      // Check the image about to be deployed. It only has a different
+      // name than the current one if the compose file bumped the tag.
+      let image = match &service.latest_image {
+        Some(image) => image,
+        None => stack
+          .info
+          .deployed_services
+          .as_ref()
+          .and_then(|services| {
+            services.iter().find_map(|deployed| {
+              (deployed.service_name == service.service)
+                .then_some(&deployed.image)
+            })
           })
-        })
-        .unwrap_or(&service.image);
+          .unwrap_or(&service.image),
+      };
       let old_enough = image_meets_min_age(
         swarm_or_server,
         image,

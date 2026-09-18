@@ -30,7 +30,7 @@ use crate::{
   alert::send_alerts,
   api::execute::{self, ExecuteRequest, ExecutionResult},
   helpers::{
-    image_digest::image_meets_min_age,
+    image_age::image_meets_min_age,
     periphery_client,
     query::{
       get_all_tags, get_deployment_state, get_swarm_or_server,
